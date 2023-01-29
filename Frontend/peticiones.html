@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./peticiones.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <title>Peticiones</title>
+  </head>
+  <body>
+    <!-- SCRIPT QUE CONTIENE EL FUNCIONAMIENTO DE LOS BOTONES QUE REALIZAN LAS PETICIONES -->
+    <script>
+      function Peticion(post, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            return callback(this.responseText);
+            console.log(this.responseText);
+          }
+        });
+
+        xhr.open(post.tipo, post.host + post.path); //endpoint
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+
+        xhr.send(post.payload);
+      }
+
+      //FUNCION BOTON GUARDAR
+      function Guardar() {
+        let cedula = document.getElementById("cedula").value;
+        let nombre = document.getElementById("name").value;
+        let apellido = document.getElementById("apellido").value;
+        let edad = document.getElementById("edad").value;
+        let direccion = document.getElementById("direccion").value;
+        let telefono = document.getElementById("telefono").value;
+        let estadocivil = document.getElementById("estadocivil").value;
+
+        let data = `cedula=${cedula}&name=${nombre}&apellido=${apellido}&edad=${edad}&direccion=${direccion}&telefono=${telefono}&estadocivil=${estadocivil}`;
+
+        let post = {
+          tipo: "POST",
+          host: "http://localhost:3000",
+          path: "/Cliente/Guardar",
+          payload: data,
+        };
+
+        Peticion(post, function (respuesta) {
+          console.log(respuesta);
+        });
+      } //Fin funcion del boton Guardar
+
+      //FUNCION BOTON LISTAR
+      const Listar = function () {
+        var data = "";
+
+        let post = {
+          tipo: "POST",
+          host: "http://localhost:3000",
+          path: "/Cliente/ListarUsuarios",
+          payload: null,
+        };
+
+        Peticion(post, function (respuesta) {
+          console.log(respuesta);
+        });
+      }; //Fin funcion del boton Listar
+
+      //FUNCION BOTON MODIFICAR
+      function Modificar() {
+        let cedula = document.getElementById("cedula").value;
+        let nombre = document.getElementById("name").value;
+        let apellido = document.getElementById("apellido").value;
+        let edad = document.getElementById("edad").value;
+        let direccion = document.getElementById("direccion").value;
+        let telefono = document.getElementById("telefono").value;
+        let estadocivil = document.getElementById("estadocivil").value;
+
+        let data = `cedula=${cedula}&name=${nombre}&apellido=${apellido}&edad=${edad}&direccion=${direccion}&telefono=${telefono}&estadocivil=${estadocivil}`;
+
+        let post = {
+          tipo: "POST",
+          host: "http://localhost:3000",
+          path: "/Cliente/Modificar",
+          payload: data,
+        };
+
+        Peticion(post, function (respuesta) {
+          console.log(respuesta);
+        });
+      } //Fin funcion del boton Actualizar
+
+      //FUNCION BOTON ELIMINAR
+      function Eliminar() {
+        let cedula = document.getElementById("cedula").value;
+        let data = `cedula=${cedula}`;
+
+        let post = {
+          tipo: "POST",
+          host: "http://localhost:3000",
+          path: "/Cliente/Eliminar",
+          payload: data,
+        };
+
+        Peticion(post, function (respuesta) {
+          console.log(respuesta);
+        });
+      } //Fin funcion del boton Eliminar
+    </script>
+    <!-- FIN DEL SCRIPT -->
+
+    <!--
+      CONTENEDOR PRINCIAPL
+    -->
+    <div id="cont-principal" class="container">
+      <div class="row justify-content-md-center">
+        <h1>Registro de clientes:</h1>
+      </div>
+
+      <!-- INPUTS -->
+      <form>
+        <div class="form-group">
+          <label for="cedula">Cédula</label>
+          <input
+            type="text"
+            class="form-control"
+            id="cedula"
+            placeholder="Enter your ID"
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            placeholder="ej. Juan"
+          />
+        </div>
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input
+            type="text"
+            class="form-control"
+            id="apellido"
+            placeholder="ej. Torres"
+          />
+        </div>
+        <div class="form-group">
+          <label for="edad">Edad</label>
+          <input type="text" class="form-control" id="edad" />
+        </div>
+        <div class="form-group">
+          <label for="direccion">Dirección</label>
+          <input type="text" class="form-control" id="direccion" />
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input
+            type="text"
+            class="form-control"
+            id="telefono"
+            placeholder="ej. 55555"
+          />
+        </div>
+        <div class="form-group">
+          <label for="estadocivil">Estado civil:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="estadocivil"
+            placeholder="ej. soltero, casado, etc."
+          />
+        </div>
+      </form>
+
+      <div class="row justify-content-md-center">
+        <!-- BOTONES -->
+        <div class="cont-button col-3">
+          <button class="btn btn-primary" onclick="Guardar()">Guardar</button>
+        </div>
+        <div class="cont-button col-3">
+          <button class="btn btn-primary" onclick="Listar()">Listar</button>
+        </div>
+        <div class="cont-button col-3">
+          <button class="btn btn-primary" onclick="Modificar()">
+            Actualizar
+          </button>
+        </div>
+        <div class="cont-button col-3">
+          <button class="btn btn-primary" onclick="Eliminar()">
+            Eliminar Usuario
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
