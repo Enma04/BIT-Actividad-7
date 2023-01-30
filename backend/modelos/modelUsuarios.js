@@ -123,37 +123,50 @@ usuariosModel.Modificar = function (data, callback) {
         return callback({ state:true, mensaje:"Datos actualizados correctamente!", ubicacion: posicion });
     } */
 
-    miModelo.findOneAndUpdate({ cedula:data.cedula }, {
-    // Para actualizar por _id es lo mismo pero se coloca así:
-    // miModelo.findById(data.cedula, {
-
-        //Datos que se actualizan
-        nombre : data.name,
-        apellido : data.apellido,
-        edad : data.edad,
-        direccion : data.direccion,
-        telefono : data.telefono,
-        estadocivil: data.estadocivil,
-        
-    }, (error, usuarioActualizado) => {
-
+    miModelo.find({ cedula: data.cedula }, {}, (error, documentos) => {  //Devuelve un array[] con los datos en la posicion 0
         if (error) {
-            console.log(error);
             return callback({ state: false, mensaje: error });
         }
         else {
-            console.log(usuarioActualizado);
-            return callback({ state: true, mensaje: "Usuario actualizado", data:usuarioActualizado });
-        }
-    })
+            if (documentos.length > 0) {
+                //return callback({ state: false, mensaje: "Usuario encontrado" });
 
+                miModelo.findOneAndUpdate({ cedula:documentos[0].cedula }, {
+                // Para actualizar por _id es lo mismo pero se coloca así:
+                // miModelo.findById(data.cedula, {
+
+                    //Datos que se actualizan
+                    nombre : data.name,
+                    apellido : data.apellido,
+                    edad : data.edad,
+                    direccion : data.direccion,
+                    telefono : data.telefono,
+                    estadocivil: data.estadocivil,
+                    
+                }, (error, usuarioActualizado) => {
+
+                    if (error) {
+                        console.log(error);
+                        return callback({ state: false, mensaje: error });
+                    }
+                    else {
+                        console.log(usuarioActualizado);
+                        return callback({ state: true, mensaje: "Usuario actualizado correctamente", data:usuarioActualizado });
+                    }
+                })  //Fin findOneAndUpdate
+            } //Fin del if de length
+            else {
+                return callback({ state: false, mensaje: "cedula no encontrada" });
+            }
+        }
+    })// Fin del find()
     
 } //Fin api UPDATE
 
 //LÓGICA DE LA API DELETE
 usuariosModel.Eliminar = function (data, eliminacion) {
 
-    let posicion = datos.findIndex((item) => item.cedula == data.cedula);
+    /* let posicion = datos.findIndex((item) => item.cedula == data.cedula);
 
     if (posicion == -1) {
         return eliminacion({ state: false, mensaje: "El usuario no existe" });
@@ -167,8 +180,36 @@ usuariosModel.Eliminar = function (data, eliminacion) {
         datos.splice(posicion, 1);
 
         return  eliminacion({state: true, mensaje: `El usuario ${nombre} ${apellido} fue eliminado`});
-    }
+    } */
     
+    miModelo.find({ cedula: data.cedula }, {}, (error, documentos) => {  //Devuelve un array[] con los datos en la posicion 0
+        if (error) {
+            return callback({ state: false, mensaje: error });
+        }
+        else {
+            if (documentos.length > 0) {
+                //return callback({ state: false, mensaje: "Usuario encontrado" });
+
+                miModelo.findByIdAndDelete(documentos[0]._id, (error, usuarioEliminado) => {
+
+                    if (error) {
+                        console.log(error);
+                        return eliminacion({ state: false, mensaje: error });
+                    }
+                    else {
+                        console.log(usuarioEliminado);
+                        return eliminacion({ state: true, mensaje: "Usuario eliminado correctamente", data:usuarioEliminado });
+                    }
+                })  //Fin findByIdAndDelete
+            } //Fin del if de length
+            else {
+                return eliminacion({ state: false, mensaje: "cedula no encontrada" });
+            }
+        }
+    })// Fin del find()
+
+
+
 } //Fin api DELETE
 
 //EXPORTAMOS LA VARIABLE QUE CONTIENE LA INFORMACIÓN
