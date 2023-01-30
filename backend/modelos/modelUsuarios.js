@@ -208,9 +208,24 @@ usuariosModel.Eliminar = function (data, eliminacion) {
         }
     })// Fin del find()
 
-
-
 } //Fin api DELETE
+
+
+//API READ DE 1 SOLO USUARIO
+usuariosModel.ListarUsuario = function (data, callback) {
+    //find({criterio de búsqueda},{datos que se quieren ver o ocultar},{})
+    miModelo.find({ cedula: data.cedula }, { _id: 0, __v: 0 }, (error, documentos) => {
+        if (error) {
+            console.log(error);
+            return callback({ state: false, mensaje: error });
+        }
+        else {
+            console.log(documentos);
+            return callback({ state: true, mensaje: "Datos de usuario", data:documentos });
+        }
+    });
+    //return callback({ state: true, datos });
+} //Fin api READ de 1 solo campo
 
 //EXPORTAMOS LA VARIABLE QUE CONTIENE LA INFORMACIÓN
 module.exports.modelUsuariosExport = usuariosModel;

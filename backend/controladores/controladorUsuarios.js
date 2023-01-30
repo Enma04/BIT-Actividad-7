@@ -133,5 +133,24 @@ usuariosController.Eliminar = function (peticion, respuesta) {
 
 } //Fin api Eiliminar
 
+
+//Api ListarUsuario
+usuariosController.ListarUsuario = function (peticion, respuesta) {
+
+    let data = { cedula: peticion.body.cedula, }
+
+    if (data.cedula == "" || data.cedula == null || data.cedula == undefined || data.cedula == " ") {
+        respuesta.json({ state: false, mensaje: "El campo cedula es obligatorio" })
+        return false;
+    }
+    else {
+        modelUsuario.ListarUsuario(data, function (res) {
+        respuesta.json(res);
+        })
+    } 
+    
+} //Fin api Listar usuarios
+
+
 //EXPORTAMOS LA VARIABLE QUE CONTIENE LA INFORMACIÓN
 module.exports.controladorUsuariosExport = usuariosController;

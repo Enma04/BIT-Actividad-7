@@ -34,3 +34,8 @@ app.post("/Cliente/Modificar", function (peticion, respuesta) {
 app.post("/Cliente/Eliminar", function (peticion, respuesta) {
     usuariosRutas.Eliminar(peticion, respuesta);
 })
+
+// Api READ de 1 usuario
+app.post("/Cliente/ListarUsuario", function (peticion,respuesta) {
+    usuariosRutas.ListarUsuario(peticion, respuesta);
+})
