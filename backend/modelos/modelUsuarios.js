@@ -30,6 +30,9 @@ var esquemaUsuarios = new esquema({
 //Creamos el modelo (unión entre el nombre de la colección y el esquema de la colección)
 const miModelo = mongoose.model('usuarios', esquemaUsuarios);
 
+//Creamos una instancia del modelo
+const instancia = new miModelo;
+
 //LÓGICA DE LA API CREATE
 usuariosModel.Guardar = function (data, callback) {
 
@@ -50,8 +53,6 @@ usuariosModel.Guardar = function (data, callback) {
     */
 
     //DATOS ALMACENADOS EN BASE DE DATOS
-    //Creamos la instancia
-    const instancia = new miModelo;
 
     instancia.cedula = data.cedula;
     instancia.nombre = data.name;
@@ -93,11 +94,12 @@ usuariosModel.ListarUsuarios = function (data, callback) {
 
 //LÓGICA DE LA API UPDATE
 usuariosModel.Modificar = function (data, callback) {
-
-    //Actualizacion de los datos
-    let posicion = datos.findIndex((item) => item.cedula == data.cedula)
     
-    if (posicion == -1) {
+    //DATOS TRABAJADOS EN MEMORIA
+    //Actualizacion de los datos
+    /*let posicion = datos.findIndex((item) => item.cedula == data.cedula)
+    
+     if (posicion == -1) {
         return callback({ state: false, mensaje: "El usuario no existe" });
     }
     else {
@@ -119,7 +121,32 @@ usuariosModel.Modificar = function (data, callback) {
         
         datos[posicion].edad = data.edad;
         return callback({ state:true, mensaje:"Datos actualizados correctamente!", ubicacion: posicion });
-    }
+    } */
+
+    miModelo.findOneAndUpdate({ cedula:data.cedula }, {
+    // Para actualizar por _id es lo mismo pero se coloca así:
+    // miModelo.findById(data.cedula, {
+
+        //Datos que se actualizan
+        nombre : data.name,
+        apellido : data.apellido,
+        edad : data.edad,
+        direccion : data.direccion,
+        telefono : data.telefono,
+        estadocivil: data.estadocivil,
+        
+    }, (error, usuarioActualizado) => {
+
+        if (error) {
+            console.log(error);
+            return callback({ state: false, mensaje: error });
+        }
+        else {
+            console.log(usuarioActualizado);
+            return callback({ state: true, mensaje: "Usuario actualizado", data:usuarioActualizado });
+        }
+    })
+
     
 } //Fin api UPDATE
 
